@@ -55,7 +55,7 @@ public class GameManagerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        map = new int[] { 0, 0, 0, 1, 0, 2, 0, 0, 0 };
+        map = new int[] { 0, 2, 0, 1, 0, 2, 2, 0, 0 };
        PrintArray();
     }
 
