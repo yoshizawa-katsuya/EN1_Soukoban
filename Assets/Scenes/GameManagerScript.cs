@@ -5,9 +5,12 @@ using UnityEngine;
 public class GameManagerScript : MonoBehaviour
 {
 
-    int[] map;
+    public GameObject playerPrefab;
+    public GameObject boxPrefab;
+    int[,] map;
+    GameObject[,] field;
 
-    void PrintArray()
+    /*void PrintArray()
     {
         string debugText = "";
         for (int i = 0; i < map.Length; i++)
@@ -15,18 +18,29 @@ public class GameManagerScript : MonoBehaviour
             debugText += map[i].ToString() + ", ";
         }
         Debug.Log(debugText);
-    }
+    }*/
 
-    int GetPlayerIndex()
+    Vector2Int GetPlayerIndex()
     {
-        for (int i = 0; i < map.Length; i++)
+        
+        for(int y = 0; y < field.GetLength(0); y++)
         {
-            if (map[i] == 1)
+            for (int x = 0; x < field.GetLength(1); x++)
             {
-                return i;
+
+                if (field[y, x] == null)
+                {
+                    continue;
+                }
+                else if (field[y, x].tag == "Player")
+                {
+                    return new Vector2Int(x, y);
+                }
+
             }
         }
-        return -1;
+
+        return new Vector2Int(-1, -1);
     }
     /// <summary>
     /// numîzóÒÇÃêîéöÇà⁄ìÆÇ≥ÇπÇÈ
@@ -35,28 +49,77 @@ public class GameManagerScript : MonoBehaviour
     /// <param name="moveFrom">ìÆÇ©Ç∑å≥ÇÃèÍèä</param>
     /// <param name="moveTo">ìÆÇ©Ç∑êÊÇÃèÍèä</param>
     /// <returns></returns>
-    bool MoveNumber(int number, int moveFrom, int moveTo)
+    bool MoveNumber(Vector2Int moveFrom, Vector2Int moveTo)
     {
-        if (moveTo < 0 || moveTo >= map.Length)
+        if (moveTo.x < 0 || moveTo.y < 0 || moveTo.y >= field.GetLength(0) || moveTo.x >= field.GetLength(1))
         {
             return false;
         }
-        if (map[moveTo] == 2)
+        if (field[moveTo.y, moveTo.x] != null && field[moveTo.y, moveTo.x].tag == "Box")
         {
-            int velocity = moveTo - moveFrom;
-            bool success = MoveNumber(2, moveTo, moveTo + velocity);
+            Vector2Int velocity = moveTo - moveFrom;
+            bool success = MoveNumber(moveTo, moveTo + velocity);
             if (!success) { return false; }
         }
-        map[moveTo] = number;
-        map[moveFrom] = 0;
+
+        field[moveFrom.y, moveFrom.x].transform.position = new Vector3(-field.GetLength(1) / 2 + moveTo.x, field.GetLength(0) / 2 - moveTo.y, 0);
+
+        field[moveTo.y, moveTo.x] = field[moveFrom.y, moveFrom.x];
+        field[moveFrom.y, moveFrom.x] = null;
         return true;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        map = new int[] { 0, 2, 0, 1, 0, 2, 2, 0, 0 };
-       PrintArray();
+
+      
+
+        map = new int[,]
+        {
+            {0, 0, 0, 0, 0 },
+            {1, 2, 2, 0, 0 },
+            {0, 0, 0, 0, 0 },
+        };
+
+        field = new GameObject
+        [
+            map.GetLength(0),
+            map.GetLength(1)
+        ];
+
+        string debugText = "";
+
+        for (int y = 0; y < map.GetLength(0);  y++)
+        {
+            for (int x = 0; x < map.GetLength(1); x++)
+            {
+                if (map[y, x] == 1)
+                {
+                    //GameObject instance = Instantiate(
+                    field[y,x] = Instantiate(
+                        playerPrefab,
+                        new Vector3(x - map.GetLength(1) / 2, -y + map.GetLength(0) / 2, 0),
+                        Quaternion.identity
+                    );
+                }
+                if (map[y, x] == 2)
+                {
+                    //GameObject instance = Instantiate(
+                    field[y, x] = Instantiate(
+                        boxPrefab,
+                        new Vector3(x - map.GetLength(1) / 2, -y + map.GetLength(0) / 2, 0),
+                        Quaternion.identity
+                    );
+                }
+
+                debugText += map[y, x].ToString() + ",";
+            }
+            debugText += "\n";
+        }
+        Debug.Log(debugText);
+
+        //PrintArray();
     }
 
     // Update is called once per frame
@@ -65,24 +128,45 @@ public class GameManagerScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
 
-            int playerIndex = GetPlayerIndex();
+            Vector2Int playerIndex = GetPlayerIndex();
 
             
-            MoveNumber(1, playerIndex, playerIndex + 1);
-            PrintArray();
+            MoveNumber(playerIndex, new Vector2Int(playerIndex.x + 1, playerIndex.y));
+            //PrintArray();
 
         }
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
 
-            int playerIndex = GetPlayerIndex();
+            Vector2Int playerIndex = GetPlayerIndex();
 
 
+            MoveNumber(playerIndex, new Vector2Int(playerIndex.x - 1, playerIndex.y));
 
-            MoveNumber(1, playerIndex, playerIndex - 1);
+            //PrintArray();
 
-            PrintArray();
+        }
+
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+
+            Vector2Int playerIndex = GetPlayerIndex();
+
+
+            MoveNumber(playerIndex, new Vector2Int(playerIndex.x, playerIndex.y - 1));
+            //PrintArray();
+
+        }
+
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+
+            Vector2Int playerIndex = GetPlayerIndex();
+
+
+            MoveNumber(playerIndex, new Vector2Int(playerIndex.x, playerIndex.y + 1));
+            //PrintArray();
 
         }
     }
