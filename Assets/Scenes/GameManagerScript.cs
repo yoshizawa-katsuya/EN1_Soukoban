@@ -20,6 +20,11 @@ public class GameManagerScript : MonoBehaviour
         Debug.Log(debugText);
     }*/
 
+    Vector3 IndexToPosition(Vector2Int index)
+    {
+        return new Vector3(index.x - field.GetLength(1) / 2, -index.y + field.GetLength(0) / 2, 0);
+    }
+
     Vector2Int GetPlayerIndex()
     {
         
@@ -62,11 +67,47 @@ public class GameManagerScript : MonoBehaviour
             if (!success) { return false; }
         }
 
-        field[moveFrom.y, moveFrom.x].transform.position = new Vector3(-field.GetLength(1) / 2 + moveTo.x, field.GetLength(0) / 2 - moveTo.y, 0);
+        field[moveFrom.y, moveFrom.x].transform.position = IndexToPosition(moveTo);
 
         field[moveTo.y, moveTo.x] = field[moveFrom.y, moveFrom.x];
         field[moveFrom.y, moveFrom.x] = null;
         return true;
+    }
+
+    
+
+    //ÉNÉäÉAîªíË
+    bool IsClead()
+    {
+        //Vector2intå^ÇÃâ¬ïœí∑îzóÒÇÃçÏê¨
+        List<Vector2Int> goals = new List<Vector2Int>();
+
+        for(int y = 0; y < map.GetLength(0); y++)
+        {
+            for (int x = 0; x < map.GetLength(1); x++)
+            {
+
+                //äiî[èÍèäÇ©î€Ç©Çîªíf
+                if (map[y, x] == 3)
+                {
+                    //äiî[èÍèäÇÃÉCÉìÉfÉbÉNÉXÇçTÇ¶ÇƒÇ®Ç≠
+                    goals.Add(new Vector2Int(x, y));
+                }
+
+            }
+        }
+
+        for(int i = 0; i < goals.Count; i++)
+        {
+            GameObject f = field[goals[i].y, goals[i].x];
+            if (f ==  null || f.tag != "Box")
+            {
+                return false;
+            }
+        }
+
+        return true;
+
     }
 
     // Start is called before the first frame update
@@ -77,8 +118,10 @@ public class GameManagerScript : MonoBehaviour
 
         map = new int[,]
         {
-            {0, 0, 0, 0, 0 },
+            {0, 0, 3, 0, 0 },
             {1, 2, 2, 0, 0 },
+            {0, 0, 0, 0, 3 },
+            {0, 0, 0, 0, 0 },
             {0, 0, 0, 0, 0 },
         };
 
@@ -99,7 +142,7 @@ public class GameManagerScript : MonoBehaviour
                     //GameObject instance = Instantiate(
                     field[y,x] = Instantiate(
                         playerPrefab,
-                        new Vector3(x - map.GetLength(1) / 2, -y + map.GetLength(0) / 2, 0),
+                        IndexToPosition(new Vector2Int(x,y)),
                         Quaternion.identity
                     );
                 }
@@ -108,7 +151,7 @@ public class GameManagerScript : MonoBehaviour
                     //GameObject instance = Instantiate(
                     field[y, x] = Instantiate(
                         boxPrefab,
-                        new Vector3(x - map.GetLength(1) / 2, -y + map.GetLength(0) / 2, 0),
+                        IndexToPosition(new Vector2Int(x, y)),
                         Quaternion.identity
                     );
                 }
@@ -134,6 +177,11 @@ public class GameManagerScript : MonoBehaviour
             MoveNumber(playerIndex, new Vector2Int(playerIndex.x + 1, playerIndex.y));
             //PrintArray();
 
+            if (IsClead())
+            {
+                Debug.Log("Clear");
+            }
+
         }
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
@@ -146,6 +194,11 @@ public class GameManagerScript : MonoBehaviour
 
             //PrintArray();
 
+            if (IsClead())
+            {
+                Debug.Log("Clear");
+            }
+
         }
 
         if (Input.GetKeyDown(KeyCode.UpArrow))
@@ -156,6 +209,11 @@ public class GameManagerScript : MonoBehaviour
 
             MoveNumber(playerIndex, new Vector2Int(playerIndex.x, playerIndex.y - 1));
             //PrintArray();
+
+            if (IsClead())
+            {
+                Debug.Log("Clear");
+            }
 
         }
 
@@ -168,6 +226,14 @@ public class GameManagerScript : MonoBehaviour
             MoveNumber(playerIndex, new Vector2Int(playerIndex.x, playerIndex.y + 1));
             //PrintArray();
 
+            if (IsClead())
+            {
+                Debug.Log("Clear");
+            }
+
         }
+
+        
+
     }
 }
