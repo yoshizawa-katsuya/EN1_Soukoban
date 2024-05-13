@@ -10,6 +10,8 @@ public class GameManagerScript : MonoBehaviour
     int[,] map;
     GameObject[,] field;
 
+    public GameObject clearText;
+
     /*void PrintArray()
     {
         string debugText = "";
@@ -179,6 +181,7 @@ public class GameManagerScript : MonoBehaviour
 
             if (IsClead())
             {
+                clearText.SetActive(true);
                 Debug.Log("Clear");
             }
 
@@ -196,6 +199,7 @@ public class GameManagerScript : MonoBehaviour
 
             if (IsClead())
             {
+                clearText.SetActive(true);
                 Debug.Log("Clear");
             }
 
@@ -212,6 +216,7 @@ public class GameManagerScript : MonoBehaviour
 
             if (IsClead())
             {
+                clearText.SetActive(true);
                 Debug.Log("Clear");
             }
 
@@ -228,6 +233,7 @@ public class GameManagerScript : MonoBehaviour
 
             if (IsClead())
             {
+                clearText.SetActive(true);
                 Debug.Log("Clear");
             }
 
