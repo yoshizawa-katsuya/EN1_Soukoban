@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +8,7 @@ public class GameManagerScript : MonoBehaviour
 
     public GameObject playerPrefab;
     public GameObject boxPrefab;
+    public GameObject goalPrefab;
     int[,] map;
     GameObject[,] field;
 
@@ -155,6 +157,14 @@ public class GameManagerScript : MonoBehaviour
                         boxPrefab,
                         IndexToPosition(new Vector2Int(x, y)),
                         Quaternion.identity
+                    );
+                }
+                if (map[y, x] == 3)
+                {
+                    Instantiate(
+                    goalPrefab,
+                    new Vector3(x - field.GetLength(1) / 2, -y + field.GetLength(0) / 2, 0.01f),
+                    Quaternion.identity
                     );
                 }
 
