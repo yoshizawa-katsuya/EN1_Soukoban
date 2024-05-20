@@ -13,6 +13,7 @@ public class GameManagerScript : MonoBehaviour
     GameObject[,] field;
 
     public GameObject clearText;
+    public GameObject ParticlePrefab;
 
     /*void PrintArray()
     {
@@ -193,6 +194,15 @@ public class GameManagerScript : MonoBehaviour
             MoveNumber(playerIndex, new Vector2Int(playerIndex.x + 1, playerIndex.y));
             //PrintArray();
 
+            for (int i = 0; i < 5; i++)
+            {
+                Instantiate(
+                    ParticlePrefab,
+                    IndexToPosition(new Vector2Int(playerIndex.x, playerIndex.y)),
+                    Quaternion.identity
+                );
+            }
+
             if (IsClead())
             {
                 clearText.SetActive(true);
@@ -211,6 +221,15 @@ public class GameManagerScript : MonoBehaviour
 
             //PrintArray();
 
+            for (int i = 0; i < 5; i++)
+            {
+                Instantiate(
+                    ParticlePrefab,
+                    IndexToPosition(new Vector2Int(playerIndex.x, playerIndex.y)),
+                    Quaternion.identity
+                );
+            }
+
             if (IsClead())
             {
                 clearText.SetActive(true);
@@ -228,6 +247,15 @@ public class GameManagerScript : MonoBehaviour
             MoveNumber(playerIndex, new Vector2Int(playerIndex.x, playerIndex.y - 1));
             //PrintArray();
 
+            for (int i = 0; i < 5; i++)
+            {
+                Instantiate(
+                    ParticlePrefab,
+                    IndexToPosition(new Vector2Int(playerIndex.x, playerIndex.y)),
+                    Quaternion.identity
+                );
+            }
+
             if (IsClead())
             {
                 clearText.SetActive(true);
@@ -244,6 +272,15 @@ public class GameManagerScript : MonoBehaviour
 
             MoveNumber(playerIndex, new Vector2Int(playerIndex.x, playerIndex.y + 1));
             //PrintArray();
+
+            for (int i = 0; i < 5; i++)
+            {
+                Instantiate(
+                    ParticlePrefab,
+                    IndexToPosition(new Vector2Int(playerIndex.x, playerIndex.y)),
+                    Quaternion.identity
+                );
+            }
 
             if (IsClead())
             {
