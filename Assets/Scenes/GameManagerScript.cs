@@ -52,11 +52,11 @@ public class GameManagerScript : MonoBehaviour
         return new Vector2Int(-1, -1);
     }
     /// <summary>
-    /// num”z—ñ‚Ì”š‚ğˆÚ“®‚³‚¹‚é
+    /// numé…åˆ—ã®æ•°å­—ã‚’ç§»å‹•ã•ã›ã‚‹
     /// </summary>
-    /// <param name="number">“®‚©‚·”š</param>
-    /// <param name="moveFrom">“®‚©‚·Œ³‚ÌêŠ</param>
-    /// <param name="moveTo">“®‚©‚·æ‚ÌêŠ</param>
+    /// <param name="number">å‹•ã‹ã™æ•°å­—</param>
+    /// <param name="moveFrom">å‹•ã‹ã™å…ƒã®å ´æ‰€</param>
+    /// <param name="moveTo">å‹•ã‹ã™å…ˆã®å ´æ‰€</param>
     /// <returns></returns>
     bool MoveNumber(Vector2Int moveFrom, Vector2Int moveTo)
     {
@@ -71,7 +71,10 @@ public class GameManagerScript : MonoBehaviour
             if (!success) { return false; }
         }
 
-        field[moveFrom.y, moveFrom.x].transform.position = IndexToPosition(moveTo);
+        //field[moveFrom.y, moveFrom.x].transform.position = IndexToPosition(moveTo);
+
+        Vector3 moveToposition = IndexToPosition(moveTo);
+        field[moveFrom.y, moveFrom.x].GetComponent<Move>().MoveTo(moveToposition);
 
         field[moveTo.y, moveTo.x] = field[moveFrom.y, moveFrom.x];
         field[moveFrom.y, moveFrom.x] = null;
@@ -80,10 +83,10 @@ public class GameManagerScript : MonoBehaviour
 
     
 
-    //ƒNƒŠƒA”»’è
+    //ã‚¯ãƒªã‚¢åˆ¤å®š
     bool IsClead()
     {
-        //Vector2intŒ^‚Ì‰Â•Ï’·”z—ñ‚Ìì¬
+        //Vector2intå‹ã®å¯å¤‰é•·é…åˆ—ã®ä½œæˆ
         List<Vector2Int> goals = new List<Vector2Int>();
 
         for(int y = 0; y < map.GetLength(0); y++)
@@ -91,10 +94,10 @@ public class GameManagerScript : MonoBehaviour
             for (int x = 0; x < map.GetLength(1); x++)
             {
 
-                //Ši”[êŠ‚©”Û‚©‚ğ”»’f
+                //æ ¼ç´å ´æ‰€ã‹å¦ã‹ã‚’åˆ¤æ–­
                 if (map[y, x] == 3)
                 {
-                    //Ši”[êŠ‚ÌƒCƒ“ƒfƒbƒNƒX‚ğT‚¦‚Ä‚¨‚­
+                    //æ ¼ç´å ´æ‰€ã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’æ§ãˆã¦ãŠã
                     goals.Add(new Vector2Int(x, y));
                 }
 
