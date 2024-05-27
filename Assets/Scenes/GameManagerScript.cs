@@ -10,8 +10,10 @@ public class GameManagerScript : MonoBehaviour
     public GameObject boxPrefab;
     public GameObject wallPrefab;
     public GameObject goalPrefab;
+    int mapNum = 1;
     int[,] map;
     GameObject[,] field;
+    GameObject[,] goal;
 
     public GameObject clearText;
     public GameObject ParticlePrefab;
@@ -128,18 +130,26 @@ public class GameManagerScript : MonoBehaviour
     {
 
         Screen.SetResolution(1280, 720, false);
-      
 
+        
         map = new int[,]
         {
-            {0, 0, 3, 0, 0 },
-            {1, 2, 2, 0, 0 },
-            {0, 0, 0, 0, 3 },
-            {0, 4, 0, 0, 0 },
-            {0, 0, 0, 0, 0 },
+            {4, 4, 4, 4, 4, 4, 4},
+            {4, 0, 0, 3, 0, 0, 4},
+            {4, 1, 2, 2, 0, 0, 4},
+            {4, 0, 0, 0, 0, 3, 4},
+            {4, 0, 4, 0, 0, 0, 4},
+            {4, 0, 0, 0, 0, 0, 4},
+            {4, 4, 4, 4, 4 ,4, 4},
         };
 
         field = new GameObject
+        [
+            map.GetLength(0),
+            map.GetLength(1)
+        ];
+
+        goal = new GameObject
         [
             map.GetLength(0),
             map.GetLength(1)
@@ -171,7 +181,7 @@ public class GameManagerScript : MonoBehaviour
                 }
                 else if (map[y, x] == 3)
                 {
-                    Instantiate(
+                    goal[y, x] = Instantiate(
                     goalPrefab,
                     new Vector3(x - field.GetLength(1) / 2, -y + field.GetLength(0) / 2, 0.01f),
                     Quaternion.identity
@@ -200,30 +210,221 @@ public class GameManagerScript : MonoBehaviour
     void Update()
     {
 
+        //ステージ遷移
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            if (mapNum > 1)
+            {
+                mapNum--;
+                if (mapNum == 1)
+                {
+
+                    map = new int[,]
+                    {
+                        {4, 4, 4, 4, 4, 4, 4},
+                        {4, 0, 0, 3, 0, 0, 4},
+                        {4, 1, 2, 2, 0, 0, 4},
+                        {4, 0, 0, 0, 0, 3, 4},
+                        {4, 0, 4, 0, 0, 0, 4},
+                        {4, 0, 0, 0, 0, 0, 4},
+                        {4, 4, 4, 4, 4 ,4, 4},
+                    };
+                    
+                }
+
+                for (int y = 0; y < map.GetLength(0); y++)
+                {
+                    for (int x = 0; x < map.GetLength(1); x++)
+                    {
+
+                        if (field[y, x] != null)
+                        {
+                            Destroy(field[y, x]);
+                        }
+                        if (goal[y, x] != null)
+                        {
+                            Destroy(goal[y, x]);
+                        }
+                    }
+                }
+
+
+
+                field = new GameObject
+                [
+                    map.GetLength(0),
+                    map.GetLength(1)
+                ];
+
+                string debugText = "";
+
+                for (int y = 0; y < map.GetLength(0); y++)
+                {
+                    for (int x = 0; x < map.GetLength(1); x++)
+                    {
+                        if (map[y, x] == 1)
+                        {
+                            //GameObject instance = Instantiate(
+                            field[y, x] = Instantiate(
+                                playerPrefab,
+                                IndexToPosition(new Vector2Int(x, y)),
+                                Quaternion.identity
+                            );
+                        }
+                        else if (map[y, x] == 2)
+                        {
+                            //GameObject instance = Instantiate(
+                            field[y, x] = Instantiate(
+                                boxPrefab,
+                                IndexToPosition(new Vector2Int(x, y)),
+                                Quaternion.identity
+                            );
+                        }
+                        else if (map[y, x] == 3)
+                        {
+                            goal[y, x] = Instantiate(
+                            goalPrefab,
+                            new Vector3(x - field.GetLength(1) / 2, -y + field.GetLength(0) / 2, 0.01f),
+                            Quaternion.identity
+                            );
+                        }
+                        else if (map[y, x] == 4)
+                        {
+                            //GameObject instance = Instantiate(
+                            field[y, x] = Instantiate(
+                                wallPrefab,
+                                IndexToPosition(new Vector2Int(x, y)),
+                                Quaternion.identity
+                            );
+                        }
+
+                        debugText += map[y, x].ToString() + ",";
+                    }
+                    debugText += "\n";
+                }
+                Debug.Log(debugText);
+
+                clearText.SetActive(false);
+
+            }
+        }
+
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            if (mapNum < 2) { 
+                mapNum++;
+                if (mapNum == 2)
+                {
+
+                    map = new int[,]
+                    {
+                    {4, 4, 4, 4, 4, 4, 4},
+                    {4, 0, 0, 0, 0, 0, 4},
+                    {4, 1, 3, 0, 2, 0, 4},
+                    {4, 0, 4, 0, 0, 0, 4},
+                    {4, 3, 4, 2, 0, 0, 4},
+                    {4, 0, 0, 0, 0, 0, 4},
+                    {4, 4, 4, 4, 4 ,4, 4},
+                    };
+
+                }
+
+                for (int y = 0; y < map.GetLength(0); y++)
+                {
+                    for (int x = 0; x < map.GetLength(1); x++)
+                    {
+
+                        if (field[y, x] != null)
+                        {
+                            Destroy(field[y, x]);
+                        }
+                        if (goal[y, x] != null)
+                        {
+                            Destroy(goal[y, x]);
+                        }
+                    }
+                }
+
+
+
+                field = new GameObject
+                [
+                    map.GetLength(0),
+                    map.GetLength(1)
+                ];
+
+                string debugText = "";
+
+                for (int y = 0; y < map.GetLength(0); y++)
+                {
+                    for (int x = 0; x < map.GetLength(1); x++)
+                    {
+                        if (map[y, x] == 1)
+                        {
+                            //GameObject instance = Instantiate(
+                            field[y, x] = Instantiate(
+                                playerPrefab,
+                                IndexToPosition(new Vector2Int(x, y)),
+                                Quaternion.identity
+                            );
+                        }
+                        else if (map[y, x] == 2)
+                        {
+                            //GameObject instance = Instantiate(
+                            field[y, x] = Instantiate(
+                                boxPrefab,
+                                IndexToPosition(new Vector2Int(x, y)),
+                                Quaternion.identity
+                            );
+                        }
+                        else if (map[y, x] == 3)
+                        {
+                            goal[y, x] = Instantiate(
+                            goalPrefab,
+                            new Vector3(x - field.GetLength(1) / 2, -y + field.GetLength(0) / 2, 0.01f),
+                            Quaternion.identity
+                            );
+                        }
+                        else if (map[y, x] == 4)
+                        {
+                            //GameObject instance = Instantiate(
+                            field[y, x] = Instantiate(
+                                wallPrefab,
+                                IndexToPosition(new Vector2Int(x, y)),
+                                Quaternion.identity
+                            );
+                        }
+
+                        debugText += map[y, x].ToString() + ",";
+                    }
+                    debugText += "\n";
+                }
+                Debug.Log(debugText);
+
+                clearText.SetActive(false);
+
+
+            }
+        }
+
+
         //リセット
         if (Input.GetKeyDown(KeyCode.R))
         {
             string debugText = "";
 
+            
+
             for (int y = 0; y < map.GetLength(0); y++)
             {
                 for (int x = 0; x < map.GetLength(1); x++)
                 {
-                
+
                     if (field[y, x] != null)
                     {
                         Destroy(field[y, x]);
                     }
 
-                }
-
-            }
-
-            for (int y = 0; y < map.GetLength(0); y++)
-            {
-                for (int x = 0; x < map.GetLength(1); x++)
-                {
-                    
                     if (map[y, x] == 1)
                     {
                         //GameObject instance = Instantiate(
@@ -289,7 +490,7 @@ public class GameManagerScript : MonoBehaviour
 
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
 
             Vector2Int playerIndex = GetPlayerIndex();
@@ -316,7 +517,7 @@ public class GameManagerScript : MonoBehaviour
 
         }
 
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        else if (Input.GetKeyDown(KeyCode.UpArrow))
         {
 
             Vector2Int playerIndex = GetPlayerIndex();
@@ -342,7 +543,7 @@ public class GameManagerScript : MonoBehaviour
 
         }
 
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
         {
 
             Vector2Int playerIndex = GetPlayerIndex();
