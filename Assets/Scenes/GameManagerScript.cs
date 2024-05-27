@@ -199,6 +199,70 @@ public class GameManagerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        //リセット
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            string debugText = "";
+
+            for (int y = 0; y < map.GetLength(0); y++)
+            {
+                for (int x = 0; x < map.GetLength(1); x++)
+                {
+                
+                    if (field[y, x] != null)
+                    {
+                        Destroy(field[y, x]);
+                    }
+
+                }
+
+            }
+
+            for (int y = 0; y < map.GetLength(0); y++)
+            {
+                for (int x = 0; x < map.GetLength(1); x++)
+                {
+                    
+                    if (map[y, x] == 1)
+                    {
+                        //GameObject instance = Instantiate(
+                        field[y, x] = Instantiate(
+                            playerPrefab,
+                            IndexToPosition(new Vector2Int(x, y)),
+                            Quaternion.identity
+                        );
+                    }
+                    else if (map[y, x] == 2)
+                    {
+                        //GameObject instance = Instantiate(
+                        field[y, x] = Instantiate(
+                            boxPrefab,
+                            IndexToPosition(new Vector2Int(x, y)),
+                            Quaternion.identity
+                        );
+                    }
+                    else if (map[y, x] == 4)
+                    {
+                        //GameObject instance = Instantiate(
+                        field[y, x] = Instantiate(
+                            wallPrefab,
+                            IndexToPosition(new Vector2Int(x, y)),
+                            Quaternion.identity
+                        );
+                    }
+
+                    debugText += map[y, x].ToString() + ",";
+                }
+                debugText += "\n";
+            }
+            Debug.Log(debugText);
+
+            clearText.SetActive(false);
+
+        }
+
+        //移動
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
 
