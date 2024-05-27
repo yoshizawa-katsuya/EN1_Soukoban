@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//BGM : 魔王魂
+//https://maou.audio/bgm_acoustic47/
+
 public class GameManagerScript : MonoBehaviour
 {
 
