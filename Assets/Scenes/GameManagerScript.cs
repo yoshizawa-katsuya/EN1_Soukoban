@@ -8,6 +8,7 @@ public class GameManagerScript : MonoBehaviour
 
     public GameObject playerPrefab;
     public GameObject boxPrefab;
+    public GameObject wallPrefab;
     public GameObject goalPrefab;
     int[,] map;
     GameObject[,] field;
@@ -65,7 +66,11 @@ public class GameManagerScript : MonoBehaviour
         {
             return false;
         }
-        if (field[moveTo.y, moveTo.x] != null && field[moveTo.y, moveTo.x].tag == "Box")
+        else if(field[moveTo.y, moveTo.x] != null && field[moveTo.y, moveTo.x].tag == "Wall")
+        {
+            return false;
+        }
+        else if (field[moveTo.y, moveTo.x] != null && field[moveTo.y, moveTo.x].tag == "Box")
         {
             Vector2Int velocity = moveTo - moveFrom;
             bool success = MoveNumber(moveTo, moveTo + velocity);
@@ -130,7 +135,7 @@ public class GameManagerScript : MonoBehaviour
             {0, 0, 3, 0, 0 },
             {1, 2, 2, 0, 0 },
             {0, 0, 0, 0, 3 },
-            {0, 0, 0, 0, 0 },
+            {0, 4, 0, 0, 0 },
             {0, 0, 0, 0, 0 },
         };
 
@@ -155,7 +160,7 @@ public class GameManagerScript : MonoBehaviour
                         Quaternion.identity
                     );
                 }
-                if (map[y, x] == 2)
+                else if (map[y, x] == 2)
                 {
                     //GameObject instance = Instantiate(
                     field[y, x] = Instantiate(
@@ -164,12 +169,21 @@ public class GameManagerScript : MonoBehaviour
                         Quaternion.identity
                     );
                 }
-                if (map[y, x] == 3)
+                else if (map[y, x] == 3)
                 {
                     Instantiate(
                     goalPrefab,
                     new Vector3(x - field.GetLength(1) / 2, -y + field.GetLength(0) / 2, 0.01f),
                     Quaternion.identity
+                    );
+                }
+                else if (map[y, x] == 4)
+                {
+                    //GameObject instance = Instantiate(
+                    field[y, x] = Instantiate(
+                        wallPrefab,
+                        IndexToPosition(new Vector2Int(x, y)),
+                        Quaternion.identity
                     );
                 }
 
